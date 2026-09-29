@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arab Hack — Community Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;600&display=swap');
+:root{--bg:#070912;--panel:#0e1320;--panel2:#12192a;--line:#222c45;--text:#f5f7fb;--muted:#8f9bb3;--p:#8b5cf6;--p2:#6366f1;--cyan:#22d3ee;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#17102e 0,#070912 38%);color:var(--text);font-family:Cairo,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+header{position:sticky;top:0;z-index:20;background:rgba(7,9,18,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.logo{font-size:23px;font-weight:800;color:#c4b5fd}.logo span{color:var(--cyan)}
+.top{display:flex;gap:7px;flex-wrap:wrap}.top button{background:#101727;color:#b9c3d8;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:12px}.top button:hover{border-color:var(--p);color:#fff}
+nav{display:flex;gap:6px;overflow:auto;padding:10px 14px;background:#090d17;border-bottom:1px solid var(--line);scrollbar-width:none}
+nav button{white-space:nowrap;background:#111827;border:1px solid var(--line);color:#9ca8bd;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700}
+nav button.active,nav button:hover{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border-color:transparent}
+main{max-width:1200px;margin:auto;padding:22px}.section{display:none}.section.active{display:block}
+.hero{padding:28px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,rgba(139,92,246,.16),rgba(34,211,238,.06));margin-bottom:18px}
+.hero h1{margin:0 0 7px;font-size:30px}.hero p{color:var(--muted);margin:0;line-height:1.8}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:rgba(14,19,32,.9);border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:0 10px 35px #0003}
+.card h2{font-size:17px;margin:0 0 12px}.card h3{font-size:14px;margin:0 0 6px}.muted{color:var(--muted);font-size:12px;line-height:1.8}
+input,textarea,select{width:100%;background:#080c15;color:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;outline:none;margin:5px 0 10px}textarea{resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--p)}
+.btn{width:100%;border:0;border-radius:8px;padding:10px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-weight:800}.btn.small{width:auto;padding:7px 11px;font-size:12px}.btn.green{background:#15803d}.btn.gray{background:#1b2435}
+.stat{padding:15px;background:#0b101c;border:1px solid var(--line);border-radius:12px}.stat b{display:block;font-size:22px}.stat span{font-size:11px;color:var(--muted)}
+.list{display:grid;gap:9px}.item{background:#0a0f1a;border:1px solid var(--line);padding:12px;border-radius:9px}.item strong{font-size:13px}.tag{font-size:10px;padding:3px 7px;border-radius:20px;background:#251a48;color:#c4b5fd;margin-right:5px}
+.code{font-family:'Fira Code',monospace;background:#05070b;color:#86efac;padding:12px;border-radius:8px;white-space:pre-wrap;word-break:break-word;font-size:12px}
+.chat{height:290px;overflow:auto;background:#080c14;border:1px solid var(--line);border-radius:9px;padding:10px}.msg{padding:8px 10px;border-radius:8px;margin:6px 0;font-size:12px;max-width:88%}.msg.me{background:#172033;margin-right:auto;color:#93c5fd}.msg.bot{background:#21173a;color:#d8b4fe}
+.row{display:flex;gap:7px}.row>*{flex:1}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;font-size:10px;background:#172033;color:#a5b4fc}
+.toast{position:fixed;bottom:20px;left:20px;background:#111827;border:1px solid #334155;padding:11px 15px;border-radius:9px;display:none;z-index:99}
+.drop{border:1px dashed #39445e;border-radius:10px;padding:22px;text-align:center;color:var(--muted)}
+.profile{display:flex;align-items:center;gap:13px}.avatar{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--p),var(--cyan));font-size:23px;font-weight:800}
+footer{text-align:center;color:#68758d;padding:28px;font-size:11px}
+@media(max-width:850px){.grid,.grid2{grid-template-columns:1fr 1fr}}@media(max-width:600px){header{align-items:flex-start;flex-direction:column}.grid,.grid2{grid-template-columns:1fr}main{padding:13px}.hero h1{font-size:24px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Arab <span>Hack</span> ⚡</div>
+  <div class="top">
+    <button onclick="login()">🔐 ربط الحساب</button>
+    <button onclick="toggleLang()">EN / اللغة</button>
+    <button onclick="notify('لا توجد إشعارات جديدة')">🔔 <span id="notif">0</span></button>
+    <button onclick="go('delta')">🔑 مفتاح Delta</button>
+    <button onclick="notify('متصل الآن: 3,120 مستخدم')">📊 3,120 مباشر</button>
+  </div>
+</header>
+
+<nav id="nav">
+<button class="active" onclick="go('home',this)">الرئيسية</button>
+<button onclick="go('scripts',this)">السكريبتات</button>
+<button onclick="go('publish',this)">نشر سكريبت</button>
+<button onclick="go('security',this)">فحص الكود</button>
+<button onclick="go('delta',this)">Delta</button>
+<button onclick="go('tutorials',this)">الشروحات</button>
+<button onclick="go('dev',this)">أدوات المطور</button>
+<button onclick="go('nova',this)">NOVA AI</button>
+<button onclick="go('community',this)">المجتمع</button>
+<button onclick="go('rank',this)">Leaderboard</button>
+<button onclick="go('profile',this)">الحساب</button>
+</nav>
+
+<main>
+<section id="home" class="section active">
+<div class="hero"><h1>Arab Hack Community Hub</h1><p>منصة مجتمع للسكريبتات، تعلم Luau، أدوات المطورين، الشروحات والذكاء الاصطناعي — كل شيء بواجهة واحدة.</p></div>
+<div class="grid">
+<div class="stat"><b>3,120</b><span>متصل الآن</span></div><div class="stat"><b>18,492</b><span>عضو</span></div><div class="stat"><b>7,842</b><span>سكريبت منشور</span></div>
+</div>
+<br>
+<div class="grid">
+<div class="card"><h2>🔥 سكريبت اليوم</h2><h3>Ultimate UI Toolkit</h3><p class="muted">حزمة واجهات Luau تجريبية للتعلم وبناء المشاريع.</p><button class="btn small" onclick="copy('print(&quot;Arab Hack Toolkit&quot;)')">نسخ الكود</button></div>
+<div class="card"><h2>🆕 الأحدث</h2><div class="list"><div class="item">Vehicle UI <span class="tag">Luau</span></div><div class="item">Inventory System <span class="tag">UI</span></div><div class="item">Round System <span class="tag">Game</span></div></div></div>
+<div class="card"><h2>📱 قسم التطبيقات</h2><p class="muted">عرض معلومات وتقييمات التطبيقات والألعاب. لا يتم استضافة ملفات ضارة أو تجاوز الحماية.</p><button class="btn gray" onclick="notify('قسم التطبيقات جاهز للعرض')">تصفح القسم</button></div>
+</div>
+</section>
+
+<section id="scripts" class="section">
+<div class="card"><h2>🔎 البحث المتقدم</h2><div class="grid2">
+<div><label>اسم الماب</label><input id="map" placeholder="Blox Fruits / King Legacy"></div>
+<div><label>النوع</label><select id="stype"><option>الكل</option><option>بدون مفتاح</option><option>بمفتاح</option></select></div></div><button class="btn" onclick="search()">بحث</button><div id="results" style="margin-top:14px"></div></div>
+</section>
+
+<section id="publish" class="section">
+<div class="card"><h2>📤 نشر سكريبت</h2><input id="scriptTitle" placeholder="اسم السكريبت"><select><option>Luau</option><option>JavaScript</option><option>Python</option></select><textarea id="scriptBody" rows="10" placeholder="ضع الكود هنا..."></textarea><button class="btn" onclick="publish()">نشر للمراجعة</button><p class="muted">كل المنشورات تخضع للمراجعة. لا ترفع مفاتيح خاصة أو بيانات حسابات.</p></div>
+</section>
+
+<section id="security" class="section">
+<div class="card"><h2>🛡️ فحص الكود</h2><textarea id="securityCode" rows="12" placeholder="ألصق كود Luau هنا لفحصه بشكل ثابت..."></textarea><button class="btn" onclick="scan()">بدء الفحص</button><div id="scanResult" style="margin-top:12px"></div></div>
+</section>
+
+<section id="delta" class="section">
+<div class="hero"><h1>🔑 Delta Tools</h1><p>واجهة معلومات وإدارة روابط فقط. لا يوجد تجاوز للحماية أو استخراج مفاتيح حقيقية داخل هذا الملف.</p></div>
+<div class="card"><h2>رابط بوابة Delta</h2><input id="deltaUrl" placeholder="ألصق الرابط هنا"><button class="btn" onclick="deltaDemo()">تحليل الرابط</button><div id="deltaOut" style="margin-top:12px"></div></div>
+</section>
+
+<section id="tutorials" class="section">
+<div class="card"><h2>📚 مكتبة الشروحات</h2><div class="grid">
+<div class="item"><h3>Luau من الصفر</h3><p class="muted">Variables → If → Loops → Functions → Tables → Events</p><button class="btn small" onclick="notify('تم فتح الدرس')">فتح</button></div>
+<div class="item"><h3>بناء GUI احترافي</h3><p class="muted">تصميم الأزرار، التبويبات، RemoteEvents وتنظيم المشروع.</p><button class="btn small" onclick="notify('تم فتح الدرس')">فتح</button></div>
+<div class="item"><h3>رفع شرح جديد</h3><div class="drop">🎬 اسحب فيديو أو اكتب شرحاً هنا</div></div>
+</div></div>
+</section>
+
+<section id="dev" class="section">
+<div class="grid2">
+<div class="card"><h2>⌨️ محرر Luau</h2><textarea id="editor" rows="15" style="font-family:'Fira Code';direction:ltr" placeholder="local coins = 500&#10;print(coins)"></textarea><div class="row"><button class="btn" onclick="formatCode()">تنسيق</button><button class="btn gray" onclick="copy(document.getElementById('editor').value)">نسخ</button></div></div>
+<div class="card"><h2>🔌 API</h2><p class="muted">إدارة نقاط التكامل الخاصة بالمشاريع.</p><input placeholder="اسم المشروع"><input placeholder="API endpoint"><button class="btn" onclick="notify('تم حفظ إعدادات API تجريبياً')">حفظ الإعدادات</button><div class="code" style="margin-top:12px">GET /api/scripts
+POST /api/projects</div></div>
+</div>
+</section>
+
+<section id="nova" class="section">
+<div class="hero"><h1>🧠 NOVA AI</h1><p>مساعد برمجي تجريبي داخل الواجهة. الربط الحقيقي بنموذج خارجي يحتاج خادماً وAPI آمن.</p></div>
+<div class="card"><div id="novaChat" class="chat"><div class="msg bot">NOVA: هلا! أساعدك بشرح Luau وتصحيح الأكواد كمساعد تجريبي.</div></div><br><div class="row"><input id="novaInput" placeholder="اكتب سؤالك..." onkeydown="if(event.key==='Enter')askNova()"><button class="btn small" onclick="askNova()">إرسال</button></div><div class="row"><button class="btn gray" onclick="novaPrompt('لعبة تجنب عقبات')">لعبة تجنب عقبات</button><button class="btn gray" onclick="novaPrompt('عالم فضائي')">عالم فضائي</button><button class="btn gray" onclick="novaPrompt('شرح JavaScript')">JavaScript</button></div></div>
+</section>
+
+<section id="community" class="section">
+<div class="grid2"><div class="card"><h2>💬 الشات</h2><div id="communityChat" class="chat"><div class="msg bot">النظام: أهلاً بكم في مجتمع Arab Hack.</div></div><br><div class="row"><input id="chatInput" placeholder="رسالتك..." onkeydown="if(event.key==='Enter')sendChat()"><button class="btn small" onclick="sendChat()">إرسال</button></div></div>
+<div class="card"><h2>👥 المجتمع</h2><div class="list"><div class="item">🟢 ArabDev — يكتب Luau</div><div class="item">🟢 NovaUser — يبني GUI</div><div class="item">🟡 CodeMaster — يتعلم Tables</div></div></div></div>
+</section>
+
+<section id="rank" class="section">
+<div class="card"><h2>🏆 Leaderboard & Badges</h2><div class="list">
+<div class="item">🥇 NovaUser — 7,240 XP — <span class="badge">Legend</span></div>
+<div class="item">🥈 ArabDev — 6,830 XP — <span class="badge">Builder</span></div>
+<div class="item">🥉 CodeMaster — 5,410 XP — <span class="badge">Luau Learner</span></div>
+<div class="item">⚡ ScriptMaker — 4,900 XP — <span class="badge">Contributor</span></div>
+</div></div>
+</section>
+
+<section id="profile" class="section">
+<div class="grid2"><div class="card"><div class="profile"><div class="avatar">A</div><div><h2 style="margin:0">Arab User</h2><p class="muted">عضو منذ 2026</p></div></div><br><input placeholder="اسم المستخدم"><button class="btn" onclick="notify('تم حفظ الملف الشخصي تجريبياً')">حفظ</button></div>
+<div class="card"><h2>📊 إحصائياتك</h2><div class="grid"><div class="stat"><b>24</b><span>منشور</span></div><div class="stat"><b>180</b><span>XP</span></div><div class="stat"><b>6</b><span>أوسمة</span></div></div><br><h2>🆘 الدعم الفني</h2><textarea rows="4" placeholder="اكتب مشكلتك"></textarea><button class="btn" onclick="notify('تم إرسال طلب الدعم تجريبياً')">إرسال</button></div></div>
+</section>
+</main>
+<footer>Arab Hack Community Hub © 2026 — واجهة تجريبية محلية</footer>
+<div id="toast" class="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+function notify(t){const x=$('toast');x.textContent=t;x.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.display='none',2400)}
+function go(id,btn){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');window.scrollTo(0,0)}
+function login(){notify('ربط الحساب متاح في النسخة المتصلة بالخادم')}
+function toggleLang(){document.documentElement.lang=document.documentElement.lang==='ar'?'en':'ar';notify(document.documentElement.lang==='en'?'Language: English':'اللغة: العربية')}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function copy(s){navigator.clipboard?.writeText(s);notify('تم النسخ')}
+function search(){let m=$('map').value.trim();let t=$('stype').value;if(!m){notify('اكتب اسم الماب');return}$('results').innerHTML='<div class="item"><strong>'+esc(m)+'</strong> <span class="tag">'+esc(t)+'</span><p class="muted">نتيجة تجريبية من قاعدة الواجهة.</p><div class="code">-- Demo Script\\nprint("Hello from Arab Hack")</div><br><button class="btn small" onclick="copy(\\'print(\"Hello from Arab Hack\")\\')">نسخ</button></div>'}
+function publish(){if(!$('scriptTitle').value.trim()||!$('scriptBody').value.trim()){notify('أكمل الاسم والكود');return}notify('تم إرسال السكريبت للمراجعة')}
+function scan(){let c=$('securityCode').value;if(!c){notify('ألصق الكود أولاً');return}let flags=[];if(/loadstring/i.test(c))flags.push('تم العثور على loadstring — راجعه يدوياً');if(/HttpGet|HttpService/i.test(c))flags.push('استخدام اتصال HTTP — يحتاج مراجعة');if(/getfenv|setfenv/i.test(c))flags.push('دوال بيئية قد تحتاج مراجعة');$('scanResult').innerHTML=flags.length?flags.map(x=>'<div class="item" style="border-color:#7f1d1d">⚠️ '+esc(x)+'</div>').join(''):'<div class="item" style="border-color:#166534">✅ لم تظهر مؤشرات بسيطة في الفحص الثابت.</div>'}
+function deltaDemo(){let u=$('deltaUrl').value.trim();if(!u){notify('أدخل الرابط');return}$('deltaOut').innerHTML='<div class="item">🔎 تم تحليل الرابط محلياً.<br><span class="muted">هذه الصفحة لا تتجاوز أنظمة الحماية ولا تستخرج مفاتيح حقيقية.</span></div>'}
+function formatCode(){let e=$('editor');e.value=e.value.split('\\n').map(x=>x.trim()).join('\\n');notify('تم التنسيق البسيط')}
+function askNova(){let q=$('novaInput').value.trim();if(!q)return;let c=$('novaChat');c.innerHTML+='<div class="msg me">أنت: '+esc(q)+'</div>';$('novaInput').value='';setTimeout(()=>{c.innerHTML+='<div class="msg bot">NOVA: أقدر أشرح لك الفكرة أو أساعدك بتنظيم كود Luau. هذا وضع تجريبي بدون اتصال API.</div>';c.scrollTop=c.scrollHeight},350)}
+function novaPrompt(q){$('novaInput').value=q;askNova()}
+function sendChat(){let i=$('chatInput'),q=i.value.trim();if(!q)return;$('communityChat').innerHTML+='<div class="msg me">أنت: '+esc(q)+'</div>';i.value=''}
+</script>
+</body>
+</html>
